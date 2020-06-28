@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Grass
+    uniqueID: 2744187405
+    locked: 0
   - name: SolidBlocks
     uniqueID: 343909105
     locked: 0
