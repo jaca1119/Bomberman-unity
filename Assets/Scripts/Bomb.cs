@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Bomb : MonoBehaviour
 {
@@ -9,11 +10,13 @@ public class Bomb : MonoBehaviour
     public LayerMask levelMask;
     public int flameLength;
 
+    private Tilemap tileMap;
     private SpriteRenderer spriteRender;
 
     // Start is called before the first frame update
     void Start()
     {
+        tileMap = GameObject.Find("ExplodableBlocks").GetComponent<Tilemap>();
         spriteRender = GetComponent<SpriteRenderer>();
         Invoke("Explode", 3f);
     }
@@ -53,12 +56,23 @@ public class Bomb : MonoBehaviour
             }
             else
             {
-                Debug.DrawLine(startPoint, raycastHit2D.transform.position, Color.white, 10F);
+                if (raycastHit2D.collider.CompareTag("ExplodableBlock"))
+                {
+                    tileMap.SetTile(tileMap.WorldToCell(raycastHit2D.point), null);
+                    Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
+                }
+
+                Debug.DrawLine(startPoint, raycastHit2D.centroid, Color.white, 10F);
                 Debug.Log("Raycast hit");
                 break;
             }
 
             yield return new WaitForSeconds(.05f);
         }
+    }
+
+    private Vector3Int ToInt3(Vector3 v)
+    {
+        return new Vector3Int((int)v.x, (int)v.y, (int)v.z);
     }
 }
