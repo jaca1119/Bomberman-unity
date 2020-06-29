@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1574602176310158845}
   - component: {fileID: 1574602176310158844}
   - component: {fileID: 1574602176310158847}
+  - component: {fileID: 3417996179556139828}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -68,8 +69,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 343909105
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c74d95f2e6b60ed4cb251d5bfbc47e82, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -101,3 +102,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3417996179556139828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574602176310158846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c11d717f18ce6a468cefd025d26f09b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flamePrefab: {fileID: 4169792825424903218, guid: 0fc97cade514b66449e0df27c7c6c0dc,
+    type: 3}
+  levelMask:
+    serializedVersion: 2
+    m_Bits: 256
+  flameLength: 4

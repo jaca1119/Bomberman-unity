@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Flame
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - SolidBlocks
   - 
   - 
   - 
@@ -43,6 +44,9 @@ TagManager:
     locked: 0
   - name: Grass
     uniqueID: 2744187405
+    locked: 0
+  - name: DestructiveBlocks
+    uniqueID: 2413055021
     locked: 0
   - name: SolidBlocks
     uniqueID: 343909105
