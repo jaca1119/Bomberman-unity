@@ -20,16 +20,6 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalMovement;
     private float verticalMovement;
 
-
-    PlayerIA playerIA;
-    Vector2 movementInput;
-
-    private void Awake()
-    {
-        playerIA = new PlayerIA();
-        playerIA.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
-    }
-
     private void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -72,16 +62,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Player enter flame");
         }
-    }
-
-    private void OnEnable()
-    {
-        playerIA.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerIA.Disable();
     }
 
     public void OnMove(InputValue inputValue)

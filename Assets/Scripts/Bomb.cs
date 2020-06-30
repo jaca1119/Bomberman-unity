@@ -13,18 +13,11 @@ public class Bomb : MonoBehaviour
     private Tilemap tileMap;
     private SpriteRenderer spriteRender;
 
-    // Start is called before the first frame update
     void Start()
     {
         tileMap = GameObject.Find("ExplodableBlocks").GetComponent<Tilemap>();
         spriteRender = GetComponent<SpriteRenderer>();
         Invoke("Explode", 3f);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void Explode()
@@ -62,9 +55,6 @@ public class Bomb : MonoBehaviour
                     tileMap.SetTile(tileMap.WorldToCell(hitPosition), null);
                     Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
                 }
-
-                Debug.DrawLine(startPoint, raycastHit2D.point, Color.white, 10F);
-                Debug.Log("Raycast hit");
                 break;
             }
 
