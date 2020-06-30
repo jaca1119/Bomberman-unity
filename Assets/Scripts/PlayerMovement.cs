@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,6 +17,19 @@ public class PlayerMovement : MonoBehaviour
     private float deltaMovement = 0.01f;
     private bool movingRight = true;
 
+    private float horizontalMovement;
+    private float verticalMovement;
+
+
+    PlayerIA playerIA;
+    Vector2 movementInput;
+
+    private void Awake()
+    {
+        playerIA = new PlayerIA();
+        playerIA.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
+    }
+
     private void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -24,31 +38,23 @@ public class PlayerMovement : MonoBehaviour
         collider2D = GetComponent<CapsuleCollider2D>();
     }
 
-    private void Update()
-    {
-        HandleBombPlacing();
-    }
-
     void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
-        float moveVertical = Input.GetAxisRaw("Vertical");
+        animator.SetFloat("Speed", Math.Abs(this.horizontalMovement));
+        animator.SetFloat("VerticalSpeed", this.verticalMovement);
 
-        animator.SetFloat("Speed", Math.Abs(moveHorizontal));
-        animator.SetFloat("VerticalSpeed", moveVertical);
-
-        if (moveHorizontal > 0 && !movingRight)
+        if (this.horizontalMovement > 0 && !movingRight)
         {
             FLip();
         }
-        else if (moveHorizontal < 0 && movingRight)
+        else if (this.horizontalMovement < 0 && movingRight)
         {
             FLip();
         }
 
         Vector2 position = transform.position;
-        position.x += deltaMovement * moveHorizontal * speed;
-        position.y += deltaMovement * moveVertical * speed;
+        position.x += deltaMovement * this.horizontalMovement * speed;
+        position.y += deltaMovement * this.verticalMovement * speed;
 
         rb2d.position = position;
     }
@@ -60,29 +66,6 @@ public class PlayerMovement : MonoBehaviour
         movingRight = !movingRight;
     }
 
-    private void HandleBombPlacing()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (bomb)
-            {
-                float snapValue = 0.5f;
-                float snapInverse = 1 / snapValue;
-                float x, y, z;
-
-                //x = Mathf.Round(collider2D.bounds.center.x * snapInverse) / snapInverse;
-                //y = Mathf.Round(collider2D.bounds.center.y * snapInverse) / snapInverse;
-                //z = 0;
-
-                x = Mathf.RoundToInt(collider2D.bounds.center.x);
-                y = Mathf.RoundToInt(collider2D.bounds.center.y);
-                z = 0;
-
-                Instantiate(bomb, new Vector3(x, y, z), bomb.transform.rotation);
-            }
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Flame"))
@@ -91,4 +74,35 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        playerIA.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerIA.Disable();
+    }
+
+    public void OnMove(InputValue inputValue)
+    {
+        Vector2 movement = inputValue.Get<Vector2>();
+
+        this.horizontalMovement = movement.x;
+        this.verticalMovement = movement.y;
+    }
+
+    public void OnPlaceBomb()
+    {
+        if (bomb)
+        {
+            float x, y, z;
+
+            x = Mathf.RoundToInt(collider2D.bounds.center.x);
+            y = Mathf.RoundToInt(collider2D.bounds.center.y);
+            z = 0;
+
+            Instantiate(bomb, new Vector3(x, y, z), bomb.transform.rotation);
+        }
+    }
 }
