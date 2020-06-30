@@ -47,22 +47,36 @@ public class Bomb : MonoBehaviour
 
             RaycastHit2D raycastHit2D = Physics2D.Raycast(startPoint, direction, i, levelMask);
 
-            Debug.DrawRay(startPoint, direction, Color.green, 30F);
-
             if (!raycastHit2D.collider)
             {
-                Debug.DrawLine(startPoint, transform.position + (i * direction), Color.red, 10F);
+                //Debug.DrawLine(startPoint, transform.position + (i * direction), Color.red, 10F);
                 Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
             }
             else
             {
+
+                Vector3 hitPosition = Vector3.zero;
+                hitPosition.x = raycastHit2D.point.x - 0.01f * raycastHit2D.normal.x;
+                hitPosition.y = raycastHit2D.point.y - 0.01f * raycastHit2D.normal.y;
+
+                Vector3 hitPoint = raycastHit2D.point;
                 if (raycastHit2D.collider.CompareTag("ExplodableBlock"))
                 {
-                    tileMap.SetTile(tileMap.WorldToCell(raycastHit2D.point), null);
+                    //This is same like world position but WorldToCell gives different value
+                    Debug.Log("HitPosition" + hitPosition);
+                    Debug.Log("HitPosition worldTocell" + tileMap.WorldToCell(hitPosition));
+
+                    Vector3Int localPos = tileMap.WorldToCell(hitPoint);
+                    //This is world position but WorldToCellGives different value from previous
+                    Debug.Log("Globalpos" + hitPoint);
+                    Debug.Log("Globalpos worldtocell" + tileMap.WorldToCell(hitPoint));
+                    Debug.Log("localPos" + localPos);
+                    Debug.Log("Center localPos" + tileMap.GetCellCenterLocal(tileMap.WorldToCell(hitPoint)));
+                    tileMap.SetTile(tileMap.WorldToCell(hitPosition), null);
                     Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
                 }
 
-                Debug.DrawLine(startPoint, raycastHit2D.centroid, Color.white, 10F);
+                Debug.DrawLine(startPoint, hitPoint, Color.white, 10F);
                 Debug.Log("Raycast hit");
                 break;
             }
