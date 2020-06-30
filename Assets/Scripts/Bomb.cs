@@ -49,44 +49,26 @@ public class Bomb : MonoBehaviour
 
             if (!raycastHit2D.collider)
             {
-                //Debug.DrawLine(startPoint, transform.position + (i * direction), Color.red, 10F);
                 Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
             }
             else
             {
-
-                Vector3 hitPosition = Vector3.zero;
-                hitPosition.x = raycastHit2D.point.x - 0.01f * raycastHit2D.normal.x;
-                hitPosition.y = raycastHit2D.point.y - 0.01f * raycastHit2D.normal.y;
-
-                Vector3 hitPoint = raycastHit2D.point;
                 if (raycastHit2D.collider.CompareTag("ExplodableBlock"))
                 {
-                    //This is same like world position but WorldToCell gives different value
-                    Debug.Log("HitPosition" + hitPosition);
-                    Debug.Log("HitPosition worldTocell" + tileMap.WorldToCell(hitPosition));
+                    Vector3 hitPosition = Vector3.zero;
+                    hitPosition.x = raycastHit2D.point.x - 0.01f * raycastHit2D.normal.x;
+                    hitPosition.y = raycastHit2D.point.y - 0.01f * raycastHit2D.normal.y;
 
-                    Vector3Int localPos = tileMap.WorldToCell(hitPoint);
-                    //This is world position but WorldToCellGives different value from previous
-                    Debug.Log("Globalpos" + hitPoint);
-                    Debug.Log("Globalpos worldtocell" + tileMap.WorldToCell(hitPoint));
-                    Debug.Log("localPos" + localPos);
-                    Debug.Log("Center localPos" + tileMap.GetCellCenterLocal(tileMap.WorldToCell(hitPoint)));
                     tileMap.SetTile(tileMap.WorldToCell(hitPosition), null);
                     Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
                 }
 
-                Debug.DrawLine(startPoint, hitPoint, Color.white, 10F);
+                Debug.DrawLine(startPoint, raycastHit2D.point, Color.white, 10F);
                 Debug.Log("Raycast hit");
                 break;
             }
 
             yield return new WaitForSeconds(.05f);
         }
-    }
-
-    private Vector3Int ToInt3(Vector3 v)
-    {
-        return new Vector3Int((int)v.x, (int)v.y, (int)v.z);
     }
 }
