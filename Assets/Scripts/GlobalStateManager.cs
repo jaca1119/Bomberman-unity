@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class GlobalStateManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Dictionary<string, int> playerFlameLength = new Dictionary<string, int>();
+
+    public void Register(string playerName, int initialFlameLength)
     {
-        
+        playerFlameLength[playerName] = initialFlameLength;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void IncrementFlameLength(string playerName)
     {
+        int flame = playerFlameLength[playerName];
         
+        if (flame <= 10)
+        {
+            flame++;
+
+            playerFlameLength[playerName] = flame;
+        }
+    }
+
+    public int GetPlayerFlameLength(string playerName)
+    {
+        return playerFlameLength[playerName];
     }
 }

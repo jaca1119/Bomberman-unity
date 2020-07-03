@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private CapsuleCollider2D collider2D;
-    private Bomb bombScript;
 
     private float deltaMovement = 0.01f;
     private bool movingRight = true;
@@ -36,7 +35,6 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider2D = GetComponent<CapsuleCollider2D>();
-        bombScript = bomb.GetComponent<Bomb>();
     }
 
     void FixedUpdate()
@@ -117,8 +115,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.CompareTag("FlamePowerup"))
         {
-            bombScript.flameLength++;
-
             collision.GetComponent<SpriteRenderer>().enabled = false;
             Destroy(collision.gameObject);
         }
