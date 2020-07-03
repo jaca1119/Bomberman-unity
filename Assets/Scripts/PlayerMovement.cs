@@ -2,17 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed;
     public GameObject bomb;
+    public Text playerHealth;
+    [Range(1, 4)]
+    public int bombsLimit = 1;
+
+    private int health = 3;
+    private bool isGhost = false;
 
     private Rigidbody2D rb2d;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private CapsuleCollider2D collider2D;
+    private Bomb bombScript;
 
     private float deltaMovement = 0.01f;
     private bool movingRight = true;
@@ -22,10 +31,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        playerHealth.text = health.ToString();
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider2D = GetComponent<CapsuleCollider2D>();
+        bombScript = bomb.GetComponent<Bomb>();
     }
 
     void FixedUpdate()
@@ -49,21 +60,6 @@ public class PlayerMovement : MonoBehaviour
         rb2d.position = position;
     }
 
-    private void FLip()
-    {
-        spriteRenderer.flipX = movingRight;
-
-        movingRight = !movingRight;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Flame"))
-        {
-            Debug.Log("Player enter flame");
-        }
-    }
-
     public void OnMove(InputValue inputValue)
     {
         Vector2 movement = inputValue.Get<Vector2>();
@@ -74,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnPlaceBomb()
     {
-        if (bomb)
+        if (bomb && bombsLimit > 0)
         {
             float x, y, z;
 
@@ -83,6 +79,67 @@ public class PlayerMovement : MonoBehaviour
             z = 0;
 
             Instantiate(bomb, new Vector3(x, y, z), bomb.transform.rotation);
+            bombsLimit--;
+
+            Invoke("BombExploded", 3f);
         }
+    }
+
+    private void FLip()
+    {
+        spriteRenderer.flipX = movingRight;
+
+        movingRight = !movingRight;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Flame") && !isGhost)
+        {
+            health--;
+            playerHealth.text = health.ToString();
+
+            EnableGhost();            
+
+            Debug.Log("Player enter flame");
+        }
+        
+        if (collision.CompareTag("BombPowerup"))
+        {
+            if (bombsLimit < 4)
+            {
+                bombsLimit++;
+            }
+
+            collision.GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.CompareTag("FlamePowerup"))
+        {
+            bombScript.flameLength++;
+
+            collision.GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(collision.gameObject);
+        }
+    }
+
+    private void EnableGhost()
+    {
+        isGhost = true;
+        spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, .5f);
+
+        Invoke("DisableGhost", 2f);
+    }
+
+    private void DisableGhost()
+    {
+        isGhost = false;
+        spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
+    }
+
+    private void BombExploded()
+    {
+        bombsLimit++;
     }
 }

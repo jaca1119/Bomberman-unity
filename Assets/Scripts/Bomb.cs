@@ -10,8 +10,12 @@ public class Bomb : MonoBehaviour
     public LayerMask levelMask;
     public int flameLength;
 
+    public GameObject bombPowerup;
+    public GameObject flamePowerup;
+
     private Tilemap tileMap;
     private SpriteRenderer spriteRender;
+
 
     void Start()
     {
@@ -54,6 +58,25 @@ public class Bomb : MonoBehaviour
 
                     tileMap.SetTile(tileMap.WorldToCell(hitPosition), null);
                     Instantiate(flamePrefab, transform.position + (i * direction), transform.rotation);
+
+                    int randPowerup = Mathf.RoundToInt(UnityEngine.Random.Range(0, 6));
+
+                    if (randPowerup == 0)
+                    {
+                        Vector2 wrapPoint = raycastHit2D.point;
+                        wrapPoint.x = Mathf.RoundToInt(wrapPoint.x);
+                        wrapPoint.y = Mathf.RoundToInt(wrapPoint.y);
+
+                        Instantiate(bombPowerup, wrapPoint, transform.rotation);
+                    }
+                    else if (true)
+                    {
+                        Vector2 wrapPoint = raycastHit2D.point;
+                        wrapPoint.x = Mathf.RoundToInt(wrapPoint.x);
+                        wrapPoint.y = Mathf.RoundToInt(wrapPoint.y);
+
+                        Instantiate(flamePowerup, wrapPoint, transform.rotation);
+                    }
                 }
                 break;
             }
